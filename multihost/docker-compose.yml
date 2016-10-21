@@ -1,0 +1,55 @@
+registrator:
+  net: host
+  labels:
+    # Put on every host
+    io.rancher.scheduler.global: 'true'
+    #io.rancher.container.network: 'true'
+  links:
+    - consul
+  # network_mode: host
+  image: gliderlabs/registrator:latest
+  # If we don't use inernal, it uses the exposed ports
+  # on the host, and traefik won't be able to get to those
+  command: consul://localhost:8500
+  volumes:
+    - /var/run/docker.sock:/tmp/docker.sock
+  env_file: .env
+proxy:
+  net: host
+  links:
+    - consul
+  image: traefik
+  labels:
+    # Put on every host
+    io.rancher.scheduler.global: 'true'
+
+    # io.rancher.container.network: 'true'
+  command: |
+    --web \
+    --consulcatalog.endpoint=localhost:8500 \
+    --consulcatalog.domain=${CONSULCATALOG_DOMAIN} \
+    --loglevel=${TRAEFIK_LOG_LEVEL}
+  ports:
+    - 80
+    - 8080
+consul:
+  net: host
+  image: consul
+  labels:
+    # Put on every host
+    io.rancher.scheduler.global: 'true'
+    # use overlay network for communication across hosts?
+    # io.rancher.container.network: 'true'
+  ports:
+    - 8300:8300
+    - 8300:8300/udp
+    - 53:8600
+    - 8500:8500
+  environment:
+    CONSUL_BIND_INTERFACE: eth0
+  volumes:
+    - /consul/data
+  command: >
+    agent
+    -rejoin -retry-join ${CONSUL}
+    -retry-max 10 -retry-interval 10s

@@ -1,0 +1,16 @@
+version: "2"
+services:
+  # TODO move this out, not tied to the service
+  proxy:
+    image: traefik
+    labels:
+      - traefik.enable=false
+    command: --web --docker --docker.domain=${DOMAIN} --logLevel=DEBUG
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./traefik.toml:/etc/traefik/traefik.toml
+      - ./certs:/certs

@@ -1,0 +1,1 @@
+Specify CONSUL as address of consul servers.  Local consul agent will connect with those. registrator picks up all docker services and puts them into consul.  Traefik then consumes from consul to pick up all names.
