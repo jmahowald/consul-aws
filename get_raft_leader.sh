@@ -1,0 +1,1 @@
+curl $CONSUL_HTTP_URL/v1/status/leader
