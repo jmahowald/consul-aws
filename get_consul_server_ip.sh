@@ -9,4 +9,4 @@ CONSUL_SERVER_IP=$(curl -q  $CONSUL_HTTP_URL/v1/catalog/service/consul  \
   | jq '.[0].Address')
 fi
 
-/usr/local/bin/usr/local/bin/docker-entrypoint.sh $@
+/usr/local/bin/docker-entrypoint.sh $@
