@@ -34,7 +34,7 @@ proxy:
     - 8080
 consul:
   net: host
-  image: consul
+  image: joshmahowald/consul-aws
   labels:
     # Put on every host
     io.rancher.scheduler.global: 'true'
@@ -46,10 +46,10 @@ consul:
     - 53:8600
     - 8500:8500
   environment:
+    CONSUL_HTTP_URL: $CONSUL_HTTP_URL
     CONSUL_BIND_INTERFACE: eth0
   volumes:
     - /consul/data
   command: >
-    agent
-    -rejoin -retry-join ${CONSUL}
-    -retry-max 10 -retry-interval 10s
+    -rejoin 
+    -retry-max 10 -retry-interval 10s    CONSUL_BIND_INTERFACE: eth0
